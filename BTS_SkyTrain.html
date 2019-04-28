@@ -1,740 +1,83 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="1671.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1b1f22; -webkit-text-stroke: #1b1f22}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #15171a; color: rgba(21, 23, 26, 0.3); -webkit-text-stroke: rgba(21, 23, 26, 0.3); min-height: 14.0px}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1b1f22; -webkit-text-stroke: #1b1f22; min-height: 14.0px}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1b1f22; -webkit-text-stroke: #1b1f22; background-color: #ffffff; min-height: 14.0px}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1f762c; -webkit-text-stroke: #1f762c}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #5b28b4; -webkit-text-stroke: #5b28b4}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #06214f; -webkit-text-stroke: #06214f}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #57606a; -webkit-text-stroke: #57606a}
-    p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #cb2339; -webkit-text-stroke: #cb2339}
-    p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #0744b8; -webkit-text-stroke: #0744b8}
-    p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1b1f22; -webkit-text-stroke: #1b1f22; background-color: #ffffff}
-    p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Menlo; color: #1f762c; -webkit-text-stroke: #1f762c; background-color: #ffffff}
-    span.s1 {font-kerning: none; background-color: #ffffff}
-    span.s2 {font-kerning: none}
-    span.s3 {font-kerning: none; color: #1f762c; background-color: #ffffff; -webkit-text-stroke: 0px #1f762c}
-    span.s4 {font-kerning: none; color: #5b28b4; background-color: #ffffff; -webkit-text-stroke: 0px #5b28b4}
-    span.s5 {font-kerning: none; color: #06214f; background-color: #ffffff; -webkit-text-stroke: 0px #06214f}
-    span.s6 {font-kerning: none; color: #1b1f22; background-color: #ffffff; -webkit-text-stroke: 0px #1b1f22}
-    span.s7 {font-kerning: none; color: #cb2339; background-color: #ffffff; -webkit-text-stroke: 0px #cb2339}
-    span.s8 {font-kerning: none; color: #0744b8; background-color: #ffffff; -webkit-text-stroke: 0px #0744b8}
-    span.s9 {font-kerning: none; color: #1b1f22; -webkit-text-stroke: 0px #1b1f22}
-    span.Apple-tab-span {white-space:pre}
-    table.t1 {border-collapse: collapse}
-    td.td1 {width: 48392.9px; padding: 0.0px 10.0px 0.0px 10.0px}
-    td.td2 {width: 50.0px; min-width: 50.0px; padding: 0.0px 10.0px 0.0px 10.0px}
-  </style>
+  <meta charset="UTF-8">
+  <title>simple Javascript WebP decoding demo</title>
+  <script type="text/javascript">
+    var Module = {
+      noInitialRun : true
+    };
+  </script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/webmproject/libwebp-demo/gh-pages/webp_js/webp.js"></script>
+  <script type="text/javascript">
+// main wrapper for the function decoding a WebP into a canvas object
+var WebpToCanvas;
+function init() {
+  WebpToCanvas = Module.cwrap('WebpToSDL', 'number', ['array', 'number']);
+}
+function decode(webp_data, canvas_id) {
+  // get the canvas to decode into
+  var canvas = document.getElementById(canvas_id);
+  if (canvas == null) return;
+  // clear previous picture (if any)
+  Module.canvas = canvas;
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  // decode and measure timing
+  start = new Date();
+  var ret = WebpToCanvas(webp_data, webp_data.length);
+  end = new Date();
+  speed_result = document.getElementById('timing');
+  // display timing result
+  if (speed_result != null) {
+    var decode_time = end - start;
+    speed_result.innerHTML = '<p>decoding time: ' + decode_time +' ms.</p>';
+  }
+}
+function loadfile(filename, canvas_id) {
+	var xhr = new XMLHttpRequest();
+	var imgTag = new Image();	
+	imgTag.src = 'data:image/webp;base64,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';
+	xhr.open('get', imgTag.src);
+    xhr.responseType = 'arraybuffer';
+    xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      var webp_data = new Uint8Array(xhr.response);
+      decode(webp_data, canvas_id);
+    }
+  };
+  xhr.send();
+}
+  </script>
 </head>
-<body>
-<table cellspacing="0" cellpadding="0" class="t1">
-  <tbody>
-    <tr>
-      <td colspan="2" valign="top" class="td1">
-        <p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1">&lt;</span><span class="s3">html</span><span class="s1"> </span><span class="s4">lang</span><span class="s1">=</span><span class="s5">"en"</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p4"><span class="s2"></span><br></p>
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p5"><span class="s6">&lt;</span><span class="s1">head</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p6"><span class="s6"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">meta</span><span class="s6"> </span><span class="s1">charset</span><span class="s6">=</span><span class="s5">"UTF-8"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">title</span><span class="s1">&gt;simple Javascript WebP decoding demo&lt;/</span><span class="s3">title</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">script</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"text/javascript"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s7">var</span><span class="s1"> Module </span><span class="s7">=</span><span class="s1"> {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>noInitialRun </span><span class="s7">:</span><span class="s1"> </span><span class="s8">true</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>};</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p5"><span class="s6"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s1">script</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">script</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"text/javascript"</span><span class="s6"> </span><span class="s4">src</span><span class="s6">=</span><span class="s1">"https://cdn.rawgit.com/webmproject/libwebp-demo/gh-pages/webp_js/webp.js"</span><span class="s6">&gt;&lt;/</span><span class="s3">script</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">script</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"text/javascript"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p8"><span class="s1">// main wrapper for the function decoding a WebP into a canvas object</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s7">var</span><span class="s1"> WebpToCanvas;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p9"><span class="s1">function</span><span class="s6"> </span><span class="s4">init</span><span class="s6">() {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>WebpToCanvas </span><span class="s7">=</span><span class="s1"> Module.</span><span class="s4">cwrap</span><span class="s1">(</span><span class="s5">'WebpToSDL'</span><span class="s1">, </span><span class="s5">'number'</span><span class="s1">, [</span><span class="s5">'array'</span><span class="s1">, </span><span class="s5">'number'</span><span class="s1">]);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1">}</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s7">function</span><span class="s1"> </span><span class="s4">decode</span><span class="s1">(webp_data, canvas_id) {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p8"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">// get the canvas to decode into</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span></span><span class="s7">var</span><span class="s1"> canvas </span><span class="s7">=</span><span class="s1"> </span><span class="s8">document</span><span class="s1">.</span><span class="s8">getElementById</span><span class="s1">(canvas_id);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span></span><span class="s7">if</span><span class="s1"> (canvas </span><span class="s7">==</span><span class="s1"> </span><span class="s8">null</span><span class="s1">) </span><span class="s7">return</span><span class="s1">;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p8"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">// clear previous picture (if any)</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>Module.canvas </span><span class="s7">=</span><span class="s1"> canvas;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>canvas.</span><span class="s8">getContext</span><span class="s1">(</span><span class="s5">'2d'</span><span class="s1">).</span><span class="s4">clearRect</span><span class="s1">(</span><span class="s8">0</span><span class="s1">, </span><span class="s8">0</span><span class="s1">, canvas.</span><span class="s8">width</span><span class="s1">, canvas.</span><span class="s8">height</span><span class="s1">);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p8"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">// decode and measure timing</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>start </span><span class="s7">=</span><span class="s1"> </span><span class="s7">new</span><span class="s1"> </span><span class="s4">Date</span><span class="s1">();</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span></span><span class="s7">var</span><span class="s1"> ret </span><span class="s7">=</span><span class="s1"> </span><span class="s4">WebpToCanvas</span><span class="s1">(webp_data, webp_data.</span><span class="s8">length</span><span class="s1">);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>end </span><span class="s7">=</span><span class="s1"> </span><span class="s7">new</span><span class="s1"> </span><span class="s4">Date</span><span class="s1">();</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p10"><span class="s6"><span class="Apple-converted-space">  </span>speed_result </span><span class="s7">=</span><span class="s6"> </span><span class="s1">document</span><span class="s6">.</span><span class="s1">getElementById</span><span class="s6">(</span><span class="s5">'timing'</span><span class="s6">);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p8"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">// display timing result</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span></span><span class="s7">if</span><span class="s1"> (speed_result </span><span class="s7">!=</span><span class="s1"> </span><span class="s8">null</span><span class="s1">) {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s7">var</span><span class="s1"> decode_time </span><span class="s7">=</span><span class="s1"> end </span><span class="s7">-</span><span class="s1"> start;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>speed_result.innerHTML </span><span class="s7">=</span><span class="s1"> </span><span class="s5">'&lt;p&gt;decoding time: '</span><span class="s1"> </span><span class="s7">+</span><span class="s1"> decode_time </span><span class="s7">+</span><span class="s5">' ms.&lt;/p&gt;'</span><span class="s1">;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1">}</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s7">function</span><span class="s1"> </span><span class="s4">loadfile</span><span class="s1">(filename, canvas_id) {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p6"><span class="s6"><span class="Apple-tab-span">	</span></span><span class="s7">var</span><span class="s6"> xhr </span><span class="s7">=</span><span class="s6"> </span><span class="s7">new</span><span class="s6"> </span><span class="s1">XMLHttpRequest</span><span class="s6">();</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s7">var</span><span class="s1"> imgTag </span><span class="s7">=</span><span class="s1"> </span><span class="s7">new</span><span class="s1"> </span><span class="s4">Image</span><span class="s1">();<span class="Apple-tab-span">	</span></span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p11"><span class="s2"><span class="Apple-tab-span">	</span>imgTag.src = 'data:image/webp;base64,UklGRnATAABXRUJQVlA4IGQTAACQdACdASpAAfAAPrVSo02nJCMvJTBcaeAWiUDjNPPwBPRpD0fMm4cxS7x2+Z3q/qF3D3PJaeLK66etXdv0O49SJ4hajH956Jnwz/uG+yaLAS+QQdX8gg9taM/8crC8nQ6ImBsmWjkif3HncRfyIHYkkeBJ53yKMOaOAn7yHi5JN3Qtcjvyicm8n4CDtxO+qP/sUN8L2gmYuvwQbLWHJ2TeDK4wJJsOL9lbF3w31T3uEGtGDoti3saQam1oNgS5NGwovbWeyBLUhRbpRliWhHAg6Fuh0bKvd0HsB6RL+9s+vZy2vTz0VxZN+hHcSe046+jikJ8laxyIUtVAXw91KVAP8tpH3Fikc0IKZwJjE7Xmc6wzOdxwgyeW76UzE0Ow+T0NIc5Rlt9J8OpABGaH6T2n51PhziFEizoC1BRaycjl4Yhkbz/E4ivXPPxu9wdB1XVKRfZSU4tgPkGr+y9i+QMLb5XYvGWl3ahnf/NCENWsbKUYF5gpCTK6nHuXuqlxVZk7LueKG1gWVm6piBGU/xnu6m73TM8w/+p3VF4GApEdzb7kaxVgIhx4Jat1QJVgB+YwNcEwc/9jbHIDYLV+4FZ1aY6EJb+mUUfx1gFjkLo8OfNmAYj6Xj2LZaVc56vvlVymUlqQxaLzRSyBZKuIcQcZoX3zl+m2G6gxrCJI03UrZun8yXGaOLlDR+9asPtZYj5b+bOMSqNPHQOr+Q+/YSNz9LXDMGboC757u5leZIfuyz1Ztj8PFRukI2xeQ7H6hYUKsTzJSHxIlMS2IUNLYq6xF8fQIY3JTPbpqRjcIRHuA1dfMaSlUfYDRS87zTwUsjzm91COqW50UcFjhSzRACFbpvqi7p9nro299QFowz0FYtZ7NGLBh0RgOTh7jIImuUdLJHOcFUmJnR8RRYXdFPQLpwymeAXf3p35c0kvjAkJzq5/+DFa848DK6f1616ymjEsnXgLISDXZYzJUcQ53riPrObl7rIldntGo3br2AuRN7DUFiTmXArNVZBLIActz7jgAmjPhsuTcl8pFktQjQlOciTH/VK/sNvlsALOMSD3KqR2kv+ydhTl46cZ/rqTv3vIsOAcKqW4ogugwHjyhfXL3C8BI7qRN4+DZzNGiksP+f4xTsBeze4lAGty9AJn9A5eowFSDhuoA/fhwFzWtmJz8kcGendF+uglR7MaDuDzKzzLwCvpWkQoLxsDWgVX15MK0YCeTy1oBMrWWM58UQYdrhD1OcJwfjFXK3RZ2AD+2RdrRAgH2w/pCJRDu4pOn4Cc4mrNUICCkHTXkPVVHKb2paeUzUh2rjykJzpXcYKsM9ZWYAatdqMb/tWovOLItgoA/ARep4PttuQF2l7bDR6RmjZlKz2gxZJv6d3dPWG4rnj6pkb6D34W5YYZW0FlqeJ6d3BCqMciXsuS9kmsFd5s3O25kjX1F3zXWbU7dEkQPFLdu6TSrEK/BmEHgH+xMnplkH8+qRXvF0LDNHPLqKvF7WBWpffTnSrtZWMJZAwUeOKhASn6WyjM7IZ0PVfYWi/VkPzZpT/P+qeQRnIktFY/oISGSzAg3qW6/EEKg6gxFpzXf1qqpEIP0LgVaSVaudNHYTcSRuYiRDyeuKM9cj6/lsw8TkIR/grfiXTZI/uaYyTJXAftnzslmOZRd78L2MH51azVT84ncJ4lWZKC4kNzFTQnrDHhgF+sAPH7KfYbs1OhW/yHAmANv2TrwzGvMQ0Zz0+YpjZmiSvXhT1KqKrNMxUctNJoer1F6SXRR6ocSD4EZPr7gAv/Uvhze1DTiAUou7n4/PAvgNpeS4BRhtWFtnf+j0AIpwelkGvmIZxNXj+gn/oW3Jv0Vs1K1dimNGFkJoanb784VNS3gWINZ5up5YM3iGXH4RmuUFCmMg2BLzCAFJ9ZI/yNoxx+pLpUi5yB6mdo+p1oqNqXN2Tt6oKYWotq3+d22KgliSGfDMLrVfoTacsSIBbqwWi8Uqaqr8ghIwS3wclbQEj3qtYrw3a7o7ZM5VmeCrQfDX42qJQcMQXsDaslL9cNZKtXz/nUh32R47/LDrW+KR6gADwIO9M1Z4Jebm24rS8xquETd600bBzfKOVQy4I24M28I0ua66wB+/Uf6Xx4n7t7u9/Bquzw0QhXhHVnuZgTaFSnsbiwk0iLJwdAbL8CZsnZUUENx7Bo3t005R7y25T4SBwgzgf7o7YX8OfU/tHkvJE1xqtS4NYN8vEkYHgecbI8YgHI1T1qS+qbgDI6pjhoCLGg4MmoP0oo7aWmqQwLAUSx6aLyCXLA1Biz+gqe/cLK/Qb3D7JMIHstLXUnFXg5yXNRBX5KrmBdN4Urq1CcmhR1YDt1e5LZ5ZDDqYRbmCXQ1JTx0cRVgZBR+ExMNy0E3ptJPdB+NEYL66L+QtdMIIQ9BNsSubnn6UkVxfwyjgwLkuznTCxiO5jz2iahp9MfHCJ3a/V2IrbzrOhrztXuyR9VmZnb8ugaQ3UNLNMC3yHtVdHKc3tamXUNQfx5UWGqtT8HUDEkSWSeG3CcmAqlzU/3x2mtRa9NPL1OiYuldcU8Kpw4LR0PKmbkOxPU6p0kk7sYSlsaIYhZwR1QuC4h7/bBA3kgIXMerNgkMuGtzOtwGGEmBwEzKDXdspr54SiyvZ0xaQRHEukqItV9YI84SY3VS6yaEPwcHDN9e52HwBuqZHu3IC0JeNYGO+HNn68TN0bdGewNpZwonMRgmOcMov/Zz5aPrmeg0eeTtvFy/82o0WBJ8ZN8K5U0XArbS9cyBY1VHFJ8qMKZRNANq4O3pQCg+/CUQiS1ZuserIBq3W5nPSWa1hqEO7iAf1Jitg5HpiwXo1OoU4/Qk4xiT9O3W9Y1bWMDQBzka6JgH1yc0nk4zVPVBX+X0xGwyKDVHWBAsBJPS+vFepACnGJvQp1rZI+cT9dU4UMfVZtDW34ZQBwiix1Kczho3jQbMZzaFsmhfd6uDs5eWVaN4YfT5aYzxyK9qptHuk8Kyh+HYIi2Eva6bMKLocjCMAYVUc+lnEGs5mtROfGVkjK+ykIgtWOhdH4YrZoJ7zVgYY0oDEa01WhA7AJ0Gjr7bupad3wUmNTenddBD/lRFAcyVyNnnWdLzYVCN4bw6NiquNl1KNyiT6eCXH/zeqexjpvutCKZyDXkhQB1yK2iDtX0d7eQQbmQ+OhwDzPQ5H0cx5mCCUndrRUp5EvoWO6V/25n1I6193ExBTmjK8wHNIjh8H5fZOlGOEH2jd7hb8Nz4/3kW5ZgtFYFM/r/rVKwjglkyaub+hPv1YNTmVSU/AIsTmf6B/75X+fdgkwm2kGlauKqpi0uLX2Dk84kO5zC3AMyAB6L6FkQ/foRf5KTSDCmkMl1Mi7S4zg7kfWRk08NyQDbJd5mob5c9LeApRtm4PeyG2zEt4lJTboBQTcyBrnwTxTJ+1llIaeNztINntc+KQU65FCOFX8cT8s870yOZaZJsm4egLOMaw5TLJAa0UWVmssZt01NGNJ8ud1N1CKJUGt/5i7r+XxohKRDEDpPPNWwJtiFGz8QBNRwDVvocYa8yLyQK/sF7r9rkRrlLAieSKgeoBnt0qxkt6/Mmfv1e9P8zElc/wWFKqYr4I8Rwi2B8XpXhZ3ihV8EnCEXZJkjI3izbXA/7n3ULTCGkzGSwvUVGdfOy9OJKVWZ8JZz/Clbp2K5LMZgO+FWfkQdam26WIOTmCWWi5/vVINRQk+DrQQ9DmO/T6Zli3mafeyEbCfVhzXVdw42KelyP7QirphDKzRZcWs3zSgyNkDWiikE/WVznZT0LiLFc3CHOxbmWmg8NE/AWYZuVkI0gU3v4Ga5t+v9Hjnk3EDUu27yOFKwpcxOTEz0RdwZwuJgnF4439Z7s8yQkukv0ZQWqI6uTeG0gUxkH3tukk74Yg602VNoLl2AKsMGdb3rfQy23ogcLskxzb7bdzEvhpOiiU77ARvl6fP2SveCZDWZtxP9HrJ7S6raCpY+g1q4aykK/OOaw0IUdm64L5Ksn+XU7/UfP4cl0nuMFxAVi38D3VIOrVgdZQbQr4ABAM9tmhD3vp9wBwjV6MP0+FEu1OmtrUPC14tgrQPrMbHBvs1DOlCoelXz61XlbFV9+/Ms/Gyrk5f/q3Ie1yaDSKMduOquAbZTf3ez+TZCVnTfczTbibyu9dQwgMK2gMBuZWmh/I7XkRwvVcIPcIyP3qxHt2AvuhCvELnOdyM8m6QduY4YQ0zyCO95v7PIvZ79TYuZg/fyhdt5H5+SVNT72RLgErFYt80B246ah4JJWaY7zxImE37FEStcvDn1P3vLWZDgu77a3xj53mNisfwYg/8wFJuFCMzImL6W4CwcY4TbFXowRwq7kjzbrXwP6f2wEoi5UjdbBXO4Vxzqf4P/gwrKvF1B4Tq06vQk2UHfXHh8yHZGQUU+ktkFfATHHjLWd3+4c/9siNH+YdpJqwE761L8UZlsmDDh9WBukfBVsZZfGNbvQqQA8AeWG7DRKQZqDqMmySx3T9U6AZpoCnbHcTTdHTiwTT9f2FKE4Mv12I1WoJAreBLYFVNGJ0VAdoQwhVG/9jeo/XpbykkXmNxdlEQYGEB4l84ABYyevNT74Ao/e1Q8Po5PRhAgXwA6CaxmOrTzmj2EMk3nEvVWr/OwjSo2LROJmrJ671gbfMCqE/DVGZGI98UApWSpB72frEvr+KUXTw/SGOzIKSgxnTd/QfljchvsRz97zFCo7aFy8pqIiNs70bRcZBvP1s9gOksviBQj+e9/cI48FMHzB+ZWGQG7pViG6uqkkjiHZBQzVmjznHnoJ1lqL10pupEDEOfKydv1qzLe6polbAgMKoLy6Ylj06H3W/UMukZEeLIdASj9r3dxwkaAIKsf2r0UzknELBceK2cmvD9HlH6ypi5rS8fy+qNtS8GX7nkC1vj1CEUysNkfCto7qn0a5ESGHHlHQDqiUDiMHU7JaVwA6x5EaGkMrOPVvt787JzdUhhoczwgRV6ttBRSYd0zACvs3EAR9kzgkplvqhKD41YiTcITCQaVnPaaWT+WWNmL0WGE+1ZALzwrsyyEsplrhqaqUaqXl0Rktt9pdQCAwea1GZz4df3RaqNO1UHrT6tAkQ4TPxRvIFOdcx0e6xn7CVJyLrZG0lqeiODh0EfFQzoPkiFVczz9zKN/VfTSFiCjTyK/q6paCLT4xFILaydP2MvvuMcFqQtnzDeIm6iPmEMkzMKz5IhbCPfAtoGHpcPcpT8IdU9d8ugdmbzEF8JBDw8b5maFFMKHNJy5YuBv6s6MzWSEXKX/PnR0MmqDqnSiGU1SnsTNyefqmMLvTWEcKZIgrmDVvNSpUZno6ELbe9HcAVag+ir4dVn3LdsoHYbm0ixHoa6Z+b5LmessLL8zfzzFywAUq9v7pwAahv5nnbX612/hx9AFJYeh/Mh8009moJoujJokN6wNKcBcrLLMam4udHvFP2t6cTMFruHmcHv4VDPi1kwAGOD/8NS7yHtNAdRe93BJtt1wG2+CPU7AzYQgqSaYpC7vH4Gj62VnXCl6dGvYClwO/RPLkYieasd1l1hT5B4jGj6R0uc4JQ+kpsNSXWFzw15eJKytec9eOcdS9Bcz1hWfUxBNYliBpMdZXXzNqOEuMYdo90SyfYJH9sHRldPBSVRI+vgM8rbap5pSn1obW657BU2ADA5JeZ862nTVd54VeS2+AzvNJMeksDaeiIh2Y2Om8yEkByKox8yw82SXy/kzl9Z4kgsWtk6lICYzYZvIaV+3Q9QKCJoEEm+OFbDVOs8XFukrkfjfgCUilY6xb4wLpq/69dVYnangsfOXk9HMsuNCXpTkHltB0LpOH60vTNMJ6Ln5fHfGzZiSDMcUiDVGewfVYBUcS2BT6tt/JG8ZSc1K/zpLuL6qDZh2vESGOHy4DsMPlStGrz7Wm0KybJM+jbd3x7rq/X6pvSNYDaw66NW6ofN2Tc1QC868dae3GShmsYn7MKbDQKzuxK9oCj9NBIIPotb7Qqv8g0Lq+BCwmOdxd5VZhcR6rMPxqKjaeLPejL53IJvFiwhSLX7C0Alirh3XbI1GFJGJFl8ViH2AtIpH5m4Z2hOLxn48g4sUaaY/fAKQM878gs8IguFDJnvQwHkbtAhzh/SMGwMeE162qMtaTptLKSBZZOF7RhQn/mteFPM+k1Yxrof1m0g2t9ZWbe+Cno3eDENg4GFp0YoSxORgTmLVy4qhOSKnBWCq5VovALIwbyHJgX1HVX8io6kBOXWZZ4D2uG8ZrAVoNRZCho8VfSMsIG7LbCNjdfnOrhS9/0Oxmmcha/HAXCb9VztNRs6h3mxPAJz2ih79gxGmK1LFZmwVx9eCKz/R02DpXdyFr8iTFXg2JNi4miqfKdG2bZAOnjuxSY5NWUUWS0CLlHbFGAH+eHZ0u7vCb/QjM2d0rhK+lvhbeofeBMFelif39yAtQa1Su1okKKNdAr809c8EHImzkGR4kP69qdwGkZFS9A1kHS8Ry2/12WaRVrDXADCLUyn0AxvlfWoRVgrXNn7rW8Vkpi0pLnMaLDKQa8HEqhqQmTvCut5i1yT/EH+r96H2qvn8CCJnPPwYWq16+OjunCKOPHEPQdzOUdSiht3AuHwW1b8VHQAAAA==';</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-tab-span">	</span>xhr.</span><span class="s8">open</span><span class="s1">(</span><span class="s5">'get'</span><span class="s1">, imgTag.src);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>xhr.responseType </span><span class="s7">=</span><span class="s1"> </span><span class="s5">'arraybuffer'</span><span class="s1">;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p6"><span class="s6"><span class="Apple-converted-space">    </span>xhr.</span><span class="s1">onreadystatechange</span><span class="s6"> </span><span class="s7">=</span><span class="s6"> </span><span class="s7">function</span><span class="s6">() {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s7">if</span><span class="s1"> (xhr.</span><span class="s8">readyState</span><span class="s1"> </span><span class="s7">==</span><span class="s1"> </span><span class="s8">4</span><span class="s1"> </span><span class="s7">&amp;&amp;</span><span class="s1"> xhr.</span><span class="s8">status</span><span class="s1"> </span><span class="s7">==</span><span class="s1"> </span><span class="s8">200</span><span class="s1">) {</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span></span><span class="s7">var</span><span class="s1"> webp_data </span><span class="s7">=</span><span class="s1"> </span><span class="s7">new</span><span class="s1"> </span><span class="s4">Uint8Array</span><span class="s1">(xhr.response);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">      </span></span><span class="s4">decode</span><span class="s1">(webp_data, canvas_id);</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>xhr.</span><span class="s8">send</span><span class="s1">();</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1">}</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p5"><span class="s6"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s1">script</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p5"><span class="s6">&lt;/</span><span class="s1">head</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p4"><span class="s2"></span><br></p>
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6">&lt;</span><span class="s3">body</span><span class="s6"> </span><span class="s4">onload</span><span class="s6">=</span><span class="s1">'init()'</span><span class="s6"> </span><span class="s4">bgcolor</span><span class="s6">=</span><span class="s1">'#f0f8ff'</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">strong</span><span class="s1">&gt;WebP in JavaScript demo&lt;/</span><span class="s3">strong</span><span class="s1">&gt; -</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>WebP decoder in JavaScript, using &lt;</span><span class="s3">a</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s4">href</span><span class="s6">=</span><span class="s1">"https://github.com/webmproject/libwebp"</span><span class="s6">&gt;libwebp&lt;/</span><span class="s3">a</span><span class="s6">&gt; compiled with</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">a</span><span class="s6"> </span><span class="s4">href</span><span class="s6">=</span><span class="s1">"https://github.com/kripken/emscripten/wiki"</span><span class="s6">&gt;Emscripten&lt;/</span><span class="s3">a</span><span class="s6">&gt;.</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>Github repository: &lt;</span><span class="s3">a</span><span class="s6"> </span><span class="s4">href</span><span class="s6">=</span><span class="s1">"https://github.com/webmproject/libwebp-demo/tree/gh-pages/webp_js"</span><span class="s6">&gt;webp_js&lt;/</span><span class="s3">a</span><span class="s6">&gt;,</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>JavaScript files: &lt;</span><span class="s3">a</span><span class="s6"> </span><span class="s4">href</span><span class="s6">=</span><span class="s1">"https://github.com/webmproject/libwebp-demo/blob/gh-pages/webp_js/webp.js"</span><span class="s6">&gt;webp.js&lt;/</span><span class="s3">a</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>(370 KB) and &lt;</span><span class="s3">a</span><span class="s6"> </span><span class="s4">href</span><span class="s6">=</span><span class="s1">"https://github.com/webmproject/libwebp-demo/blob/gh-pages/webp_js/webp.js.mem"</span><span class="s6">&gt;webp.js.mem&lt;/</span><span class="s3">a</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>(11KB).</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">br</span><span class="s1">/&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p4"><span class="s2"></span><br></p>
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">p</span><span class="s6"> </span><span class="s4">id</span><span class="s6">=</span><span class="s1">"image_buttons"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">input</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"button"</span><span class="s6"> </span><span class="s4">value</span><span class="s6">=</span><span class="s1">"lossy example"</span><span class="s6"> </span><span class="s4">name</span><span class="s6">=</span><span class="s1">"./test1.webp"</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">           </span></span><span class="s4">onclick</span><span class="s6">=</span><span class="s1">"loadfile(this.name, 'output_canvas')"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">input</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"button"</span><span class="s6"> </span><span class="s4">value</span><span class="s6">=</span><span class="s1">"lossy+alpha example"</span><span class="s6"> </span><span class="s4">name</span><span class="s6">=</span><span class="s1">"./test2.webp"</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">           </span></span><span class="s4">onclick</span><span class="s6">=</span><span class="s1">"loadfile(this.name, 'output_canvas')"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>&lt;</span><span class="s3">input</span><span class="s6"> </span><span class="s4">type</span><span class="s6">=</span><span class="s1">"button"</span><span class="s6"> </span><span class="s4">value</span><span class="s6">=</span><span class="s1">"lossless example"</span><span class="s6"> </span><span class="s4">name</span><span class="s6">=</span><span class="s1">"./test3.webp"</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p7"><span class="s6"><span class="Apple-converted-space">           </span></span><span class="s4">onclick</span><span class="s6">=</span><span class="s1">"loadfile(this.name, 'output_canvas')"</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">p</span><span class="s1"> </span><span class="s4">id</span><span class="s1">=</span><span class="s5">"timing"</span><span class="s1">&gt;Timing: N/A&lt;/</span><span class="s3">p</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;</span><span class="s3">canvas</span><span class="s1"> </span><span class="s4">id</span><span class="s1">=</span><span class="s5">"output_canvas"</span><span class="s1">&gt;Your browser does not support canvas&lt;/</span><span class="s3">canvas</span><span class="s1">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td1">
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p4"><span class="s2"></span><br></p>
-        <p class="p3"><span class="s2"></span><br></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p5"><span class="s6">&lt;/</span><span class="s1">body</span><span class="s6">&gt;</span></p>
-      </td>
-    </tr>
-    <tr>
-      <td valign="top" class="td2">
-        <p class="p2"><span class="s2"></span><br></p>
-      </td>
-      <td valign="top" class="td1">
-        <p class="p12"><span class="s9">&lt;/</span><span class="s2">html</span><span class="s9">&gt;</span></p>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+<body onload='init()' bgcolor='#f0f8ff'>
+  <p>
+    <strong>WebP in JavaScript demo</strong> -
+  </p>
+  <p>
+    WebP decoder in JavaScript, using <a
+    href="https://github.com/webmproject/libwebp">libwebp</a> compiled with
+    <a href="https://github.com/kripken/emscripten/wiki">Emscripten</a>.
+  </p>
+  <p>
+    Github repository: <a href="https://github.com/webmproject/libwebp-demo/tree/gh-pages/webp_js">webp_js</a>,
+    JavaScript files: <a href="https://github.com/webmproject/libwebp-demo/blob/gh-pages/webp_js/webp.js">webp.js</a>
+    (370 KB) and <a href="https://github.com/webmproject/libwebp-demo/blob/gh-pages/webp_js/webp.js.mem">webp.js.mem</a>
+    (11KB).
+    <br/>
+  </p>
+
+  <p id="image_buttons">
+    <input type="button" value="lossy example" name="./test1.webp"
+           onclick="loadfile(this.name, 'output_canvas')">
+    <input type="button" value="lossy+alpha example" name="./test2.webp"
+           onclick="loadfile(this.name, 'output_canvas')">
+    <input type="button" value="lossless example" name="./test3.webp"
+           onclick="loadfile(this.name, 'output_canvas')">
+  </p>
+  <p id="timing">Timing: N/A</p>
+  <canvas id="output_canvas">Your browser does not support canvas</canvas>
+
 </body>
 </html>
